@@ -300,7 +300,7 @@ footer .wrap{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;
       <h2>CSINÁLJUNK<br>BELŐLE VALAMIT.</h2>
       <p>Írd le, mire van szükséged. Lehet szó 3D modellről, mintadarab újratervezéséről, egyedi termékről vagy kis szériás gyártásról.</p>
     </div>
-<form class="form" action="https://formspree.io/f/moevblja" method="POST">
+<form id="quote-form" class="form" action="https://formspree.io/f/moevblja" method="POST">
 
   <div class="row">
     <label>Név
@@ -329,6 +329,8 @@ footer .wrap{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;
     AJÁNLATKÉRÉS KÜLDÉSE →
   </button>
 
+<p id="form-status" style="display:none; margin-top:18px;"></p>
+
 </form>
 </section>
 </main>
@@ -340,5 +342,47 @@ footer .wrap{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;
     <div class="links"><a href="#">Adatvédelem</a><a href="#">ÁSZF</a><a href="#">Kapcsolat</a><a href="https://www.instagram.com/szigis.3d/">Instagram</a><a href="https://www.tiktok.com/@szigis.3d">TikTok</a></div>
   </div>
 </footer>
+
+<script>
+const form = document.getElementById("quote-form");
+const status = document.getElementById("form-status");
+
+form.addEventListener("submit", async function(event) {
+    event.preventDefault();
+
+    const data = new FormData(form);
+    const button = form.querySelector('button[type="submit"]');
+
+    button.disabled = true;
+    button.textContent = "KÜLDÉS...";
+
+    try {
+        const response = await fetch(form.action, {
+            method: form.method,
+            body: data,
+            headers: {
+                "Accept": "application/json"
+            }
+        });
+
+        if (response.ok) {
+            status.style.display = "block";
+            status.textContent = "✓ Köszönöm! Az ajánlatkérésed sikeresen elküldve.";
+            form.reset();
+        } else {
+            status.style.display = "block";
+            status.textContent = "Hiba történt a küldés során. Kérlek, próbáld újra.";
+        }
+    } catch (error) {
+        status.style.display = "block";
+        status.textContent = "Hiba történt a küldés során. Kérlek, próbáld újra.";
+    }
+
+    button.disabled = false;
+    button.textContent = "AJÁNLATKÉRÉS KÜLDÉSE →";
+});
+</script>
+
+
 </body>
 </html>
